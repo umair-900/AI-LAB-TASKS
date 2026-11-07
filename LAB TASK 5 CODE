@@ -1,0 +1,57 @@
+def minimax(a, depth, pos, maximizing, count):
+    if depth == 3:
+        count[0] += 1
+        return a[pos]
+
+    left = minimax(a, depth+1, pos*2, not maximizing, count)
+    right = minimax(a, depth+1, pos*2+1, not maximizing, count)
+
+    if maximizing:
+        return max(left, right)
+    else:
+        return min(left, right)
+
+
+def alphabeta(a, depth, pos, maximizing, alpha, beta, count):
+    if depth == 3:
+        count[0] += 1
+        return a[pos]
+
+    if maximizing:
+        best = float('-inf')
+        for i in range(2):
+            value = alphabeta(a, depth+1, pos*2+i,
+                              False, alpha, beta, count)
+            best = max(best, value)
+            alpha = max(alpha, best)
+
+            if alpha >= beta:
+                break
+        return best
+
+    else:
+        best = float('inf')
+        for i in range(2):
+            value = alphabeta(a, depth+1, pos*2+i,
+                              True, alpha, beta, count)
+            best = min(best, value)
+            beta = min(beta, best)
+
+            if alpha >= beta:
+                break
+        return best
+
+
+scores = [3, 5, 2, 9, 0, 7, 0, 0]
+
+m_count = [0]
+a_count = [0]
+
+m_value = minimax(scores, 0, 0, True, m_count)
+a_value = alphabeta(scores, 0, 0, True,
+                    float('-inf'), float('inf'), a_count)
+
+print("Minimax Value:", m_value)
+print("Minimax Leaves:", m_count[0])
+print("Alpha-Beta Value:", a_value)
+print("Alpha-Beta Leaves:", a_count[0])
