@@ -1,0 +1,41 @@
+import heapq
+
+graph = {
+    'S': [('A', 1), ('B', 4)],
+    'A': [('C', 2)],
+    'B': [('G', 5)],
+    'C': [('G', 3)],
+    'G': []
+}
+
+h = {'S': 5, 'A': 4, 'B': 4, 'C': 2, 'G': 0}
+
+
+def search(h):
+    q = [(h['S'], 0, 'S', ['S'])]
+    visited = set()
+
+    while q:
+        f, cost, node, path = heapq.heappop(q)
+
+        if node in visited:
+            continue
+
+        visited.add(node)
+
+        if node == 'G':
+            return path, cost
+
+        for child, edge_cost in graph[node]:
+            new_cost = cost + edge_cost
+            new_f = new_cost + h[child]
+
+            heapq.heappush(q, (new_f, new_cost, child, path + [child]))
+
+    return [], 0
+
+
+print("A*:", search(h))
+
+zero_h = {node: 0 for node in graph}
+print("UCS:", search(zero_h))
